@@ -1,6 +1,6 @@
 [
 	{
-		"image_path": "hSMUJcMYNfg/1.png",
+		"image_path": "data/img/hSMUJcMYNfg/1.png",
 		"boards": [
 			{
 				"position": [
@@ -23,7 +23,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/2.png",
+		"image_path": "data/img/hSMUJcMYNfg/2.png",
 		"boards": [
 			{
 				"position": [
@@ -46,7 +46,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/3.png",
+		"image_path": "data/img/hSMUJcMYNfg/3.png",
 		"boards": [
 			{
 				"position": [
@@ -69,7 +69,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/4.png",
+		"image_path": "data/img/hSMUJcMYNfg/4.png",
 		"boards": [
 			{
 				"position": [
@@ -92,7 +92,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/5.png",
+		"image_path": "data/img/hSMUJcMYNfg/5.png",
 		"boards": [
 			{
 				"position": [
@@ -115,7 +115,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/6.png",
+		"image_path": "data/img/hSMUJcMYNfg/6.png",
 		"boards": [
 			{
 				"position": [
@@ -138,7 +138,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/7.png",
+		"image_path": "data/img/hSMUJcMYNfg/7.png",
 		"boards": [
 			{
 				"position": [
@@ -161,7 +161,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/8.png",
+		"image_path": "data/img/hSMUJcMYNfg/8.png",
 		"boards": [
 			{
 				"position": [
@@ -184,7 +184,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/9.png",
+		"image_path": "data/img/hSMUJcMYNfg/9.png",
 		"boards": [
 			{
 				"position": [
@@ -207,7 +207,7 @@
 		]
 	},
 	{
-		"image_path": "hSMUJcMYNfg/10.png",
+		"image_path": "data/img/hSMUJcMYNfg/10.png",
 		"boards": [
 			{
 				"position": [
