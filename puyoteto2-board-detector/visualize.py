@@ -4,6 +4,9 @@ import torch
 import torchvision.transforms as transforms
 import os
 
+from transform import get_train_transform, get_test_transform
+
+
 # ラベルIDを文字で確認したい場合
 LABEL_NAMES = [
     "E", "I", "O", "T", "L", "J", "S", "Z", "G"
@@ -11,7 +14,7 @@ LABEL_NAMES = [
 
 dataset = TetrisCellDataset(
     board_info_path='./data/board_info.json',
-    transform=transforms.Resize((32, 32))  # 小さくして表示しやすく
+    transform=get_train_transform(),
 )
 
 # 上位200サンプルだけ確認

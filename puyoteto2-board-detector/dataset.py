@@ -3,11 +3,13 @@ from torch.utils.data import Dataset
 from PIL import Image
 import json
 import os
+import random
 from torchvision import transforms
 
 
 class TetrisCellDataset(Dataset):
-    def __init__(self, board_info_path, transform=None):
+    def __init__(self, board_info_path,transform=None, is_train=True, max_crop_shift=5):
+
         with open(board_info_path, 'r') as f:
             raw_info = json.load(f)
 
@@ -25,6 +27,8 @@ class TetrisCellDataset(Dataset):
                     'labels': labels
                 })
 
+        self.is_train = is_train
+        self.max_crop_shift = max_crop_shift
         self.transform = transform if transform else transforms.ToTensor()
 
     def __len__(self):
@@ -49,6 +53,16 @@ class TetrisCellDataset(Dataset):
         cy1 = int(row * cell_h)
         cx2 = int((col + 1) * cell_w)
         cy2 = int((row + 1) * cell_h)
+
+        if self.is_train:
+            shift_x = random.randint(-self.max_crop_shift, self.max_crop_shift)
+            shift_y = random.randint(-self.max_crop_shift, self.max_crop_shift)
+
+            cx1 = max(0, cx1 + shift_x)
+            cx2 = max(cx1 + 1, cx2 + shift_x)
+
+            cy1 = max(0, cy1 + shift_y)
+            cy2 = max(cy1 + 1, cy2 + shift_y)
 
         cell_img = board_img.crop((cx1, cy1, cx2, cy2))
         label = sample['labels'][row][col]
