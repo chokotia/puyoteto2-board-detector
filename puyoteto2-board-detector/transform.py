@@ -51,8 +51,12 @@ def get_train_transform():
         transforms.ColorJitter(0.2, 0.2, 0.2, 0.05),            # 明るさ/コントラスト/彩度/色相
         RandomWhiteLineNoise(p=0.3),
         RandomWhiteSpotNoise(p=0.3),
-        transforms.Resize((32, 32))
+        transforms.Resize((224, 224)),
+        transforms.ToTensor()
     ])
 
 def get_test_transform():
-    return transforms.Resize((32, 32))
+    return transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor()
+    ])
