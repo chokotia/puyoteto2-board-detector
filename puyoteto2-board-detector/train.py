@@ -35,9 +35,13 @@ test_dataset.dataset.transform = get_test_transform()
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-# --- モデル構築（ResNet18ベース） ---
-model = models.resnet18(weights=True)
-model.fc = nn.Linear(model.fc.in_features, 9)
+# --- モデル構築（MobileNetV2ベース） ---
+model = models.mobilenet_v2(weights=True)
+# MobileNetV2の最終層を置き換え
+model.classifier = nn.Sequential(
+    nn.Dropout(0.2),
+    nn.Linear(model.last_channel, 9)
+)
 model = model.to(DEVICE)
 
 criterion = nn.CrossEntropyLoss()
