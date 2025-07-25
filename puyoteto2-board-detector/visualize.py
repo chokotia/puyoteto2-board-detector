@@ -13,7 +13,7 @@ LABEL_NAMES = [
 ]
 
 dataset = TetrisCellDataset(
-    board_info_path='./data/board_info.json',
+    board_info_path='./data/preprocessed_board_info.json',
     transform=get_train_transform(),
 )
 
