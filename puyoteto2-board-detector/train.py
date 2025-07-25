@@ -11,6 +11,7 @@ from datetime import datetime
 BATCH_SIZE = 32
 EPOCHS = 10
 LR = 1e-4
+TRAIN_RATIO = 0.8
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # --- 保存ディレクトリ作成 ---
@@ -20,11 +21,11 @@ os.makedirs(save_dir, exist_ok=True)
 
 # --- データ読み込み & 分割 ---
 full_dataset = TetrisCellDataset(
-    board_info_path='./data/board_info.json',
+    board_info_path='./data/preprocessed_board_info.json',
     transform=get_train_transform()
 )
 
-train_size = int(0.8 * len(full_dataset))
+train_size = int(TRAIN_RATIO * len(full_dataset))
 test_size = len(full_dataset) - train_size
 train_dataset, test_dataset = random_split(full_dataset, [train_size, test_size])
 
@@ -81,5 +82,7 @@ for epoch in range(EPOCHS):
     print(f"[Epoch {epoch+1}] Test Accuracy: {test_acc:.2f}%")
 
     # --- モデル保存 ---
-    model_path = os.path.join(save_dir, f"epoch_{epoch+1}.pth")
+    model_path = os.path.join(save_dir, f"epoch_{epoch+1}_acc_{test_acc:.2f}.pth")
     torch.save(model.state_dict(), model_path)
+
+print(f"\n学習完了！モデルは {save_dir} に保存されました。")
