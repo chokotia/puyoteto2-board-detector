@@ -4,7 +4,7 @@ import random
 
 # 白線ノイズ（アニメーションの白い線を再現）
 class RandomWhiteLineNoise:
-    def __init__(self, p=0.5, max_lines=2, max_line_width=5):
+    def __init__(self, p=0.5, max_lines=4, max_line_width=10):
         self.p = p
         self.max_lines = max_lines
         self.max_line_width = max_line_width  # 最大線幅
@@ -27,7 +27,7 @@ class RandomWhiteLineNoise:
 
 # 白飛びノイズ（アニメーションの一部白化を再現）
 class RandomWhiteSpotNoise:
-    def __init__(self, p=0.5, max_spots=5, max_radius=5):
+    def __init__(self, p=0.5, max_spots=7, max_radius=10):
         self.p = p
         self.max_spots = max_spots
         self.max_radius = max_radius  # 最大半径
@@ -49,8 +49,8 @@ def get_train_transform():
     return transforms.Compose([
         transforms.RandomHorizontalFlip(p=0.5),                # 左右反転（上下は禁止）
         transforms.ColorJitter(0.2, 0.2, 0.2, 0.05),            # 明るさ/コントラスト/彩度/色相
-        RandomWhiteLineNoise(p=0.3),
-        RandomWhiteSpotNoise(p=0.3),
+        RandomWhiteLineNoise(p=0.5),
+        RandomWhiteSpotNoise(p=0.5),
         transforms.Resize((224, 224)),
         transforms.ToTensor()
     ])
@@ -59,4 +59,12 @@ def get_test_transform():
     return transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor()
+    ])
+
+def get_visualize_dataset_transform():
+    return transforms.Compose([
+        transforms.RandomHorizontalFlip(p=0.5),                # 左右反転（上下は禁止）
+        transforms.ColorJitter(0.2, 0.2, 0.2, 0.05),            # 明るさ/コントラスト/彩度/色相
+        RandomWhiteLineNoise(p=0.5),
+        RandomWhiteSpotNoise(p=0.5)
     ])
