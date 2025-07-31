@@ -9,17 +9,19 @@ import numpy as np
 
 # --- モデル構造の定義（predict_board.pyと同じ） ---
 def create_model():
-    """カスタムMobileNet v2モデルを作成"""
-    model = models.mobilenet_v2()
+    """カスタムMobileNet v3 smallモデルを作成"""
+    model = models.mobilenet_v3_small(weights=None)
     model.classifier = nn.Sequential(
+        nn.Linear(model.classifier[0].in_features, 512),
+        nn.Hardswish(),
         nn.Dropout(0.2),
-        nn.Linear(model.last_channel, 9)  # 9クラス分類
+        nn.Linear(512, 9)
     )
     return model
 
 # --- 設定 ---
-model_path = "models/2025-07-31-1205/epoch_3_acc_99.94.pth"  # 学習済みモデルパス
-output_path = "tetris_mobilenet_v2.onnx"  # 出力ONNXファイル名
+model_path = "models/2025-07-31-1942/epoch_7_acc_99.88.pth"  # 学習済みモデルパス
+output_path = "tetris_mobilenet_v3_small.onnx"  # 出力ONNXファイル名
 # Webアプリ用にはCPU固定が推奨（ONNX.jsとの互換性向上）
 device = torch.device("cpu")
 
@@ -43,7 +45,7 @@ with torch.no_grad():
         dummy_input,                    # ダミー入力
         output_path,                    # 出力ファイル名
         export_params=True,             # パラメータも含める
-        opset_version=9,               # ONNX.js互換性のため v9 に変更
+        opset_version=14,               # v3_smallは9では動作しなかったため14に上げる
         do_constant_folding=True,       # 定数畳み込み最適化
         input_names=['input'],          # 入力名
         output_names=['output'],        # 出力名

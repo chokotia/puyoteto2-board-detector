@@ -11,16 +11,18 @@ from transform import get_test_transform
 video_idx = 0
 frame_idx = 0
 board_idx = 0       # その画像内の何番目の盤面か
-model_path = "models/2025-07-31-1205/epoch_3_acc_99.94.pth"  # 学習済みモデル
+model_path = "models/2025-07-31-1942/epoch_7_acc_99.88.pth"  # 学習済みモデル
 
 # --- デバイス ---
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # --- モデルの構築・読み込み ---
-model = models.mobilenet_v2()
+model = models.mobilenet_v3_small(weights=None)
 model.classifier = nn.Sequential(
+    nn.Linear(model.classifier[0].in_features, 512),
+    nn.Hardswish(),
     nn.Dropout(0.2),
-    nn.Linear(model.last_channel, 9)
+    nn.Linear(512, 9)
 )
 model.load_state_dict(torch.load(model_path, map_location=device))
 model = model.to(device)

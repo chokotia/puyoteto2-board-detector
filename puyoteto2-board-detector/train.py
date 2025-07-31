@@ -32,12 +32,15 @@ test_dataset = TetrisCellDataset(
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-# --- モデル構築（MobileNetV2ベース） ---
-model = models.mobilenet_v2(weights=True)
-# MobileNetV2の最終層を置き換え
+# --- モデル構築（MobileNetV3 smallベース） ---
+from torchvision.models import MobileNet_V3_Small_Weights
+
+model = models.mobilenet_v3_small(weights=MobileNet_V3_Small_Weights.DEFAULT)
 model.classifier = nn.Sequential(
+    nn.Linear(model.classifier[0].in_features, 512),
+    nn.Hardswish(),
     nn.Dropout(0.2),
-    nn.Linear(model.last_channel, 9)
+    nn.Linear(512, 9)
 )
 model = model.to(DEVICE)
 
