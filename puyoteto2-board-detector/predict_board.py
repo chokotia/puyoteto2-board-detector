@@ -8,15 +8,16 @@ import os
 from transform import get_test_transform
 
 # --- 入力指定 ---
-image_idx = 0       # board_info.jsonの何番目の画像か
+video_idx = 0
+frame_idx = 0
 board_idx = 0       # その画像内の何番目の盤面か
-model_path = "models/2025-07-25-1551/epoch_2_acc_99.75.pth"  # 学習済みモデル
+model_path = "models/2025-07-31-1205/epoch_3_acc_99.94.pth"  # 学習済みモデル
 
 # --- デバイス ---
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # --- モデルの構築・読み込み ---
-model = models.mobilenet_v2(weights=False)
+model = models.mobilenet_v2()
 model.classifier = nn.Sequential(
     nn.Dropout(0.2),
     nn.Linear(model.last_channel, 9)
@@ -26,13 +27,15 @@ model = model.to(device)
 model.eval()
 
 # --- board_info 読み込み ---
-with open("data/board_info.json", "r") as f:
-    board_info = json.load(f)
+with open("./data/board_annotations_val.json", "r", encoding='utf-8') as f:
+    board_annotations = json.load(f)
 
-entry = board_info[image_idx]
-board = entry["boards"][board_idx]
-image_path = entry["image_path"]
-position = board["position"]  # [x1, y1, x2, y2]
+video_id = board_annotations[video_idx]["video_id"]
+frame = board_annotations[video_idx]["frames"][frame_idx]
+image_file = frame["image_file"]
+position = frame["boards"][board_idx]["position"] # [x1, y1, x2, y2]
+true_labels = frame["boards"][board_idx]["labels"]
+image_path = "data/img/" + video_id + "/" + image_file
 
 # --- 画像読み込み & 切り出し ---
 image = Image.open(image_path).convert("RGB")
@@ -64,11 +67,10 @@ for col in range(10):          # 左から右へ
 
 # --- 出力 ---
 label_str = ''.join(predicted_labels)
-print(f"[Image {image_idx}, Board {board_idx}]")
+print(f"[video_idx {video_idx}, frame_idx {frame_idx}, board_idx {board_idx}]")
 print(f"Predicted labels ({len(label_str)} chars):\n{label_str}")
 
 # --- 元ラベルの表示（比較用） ---
-true_labels = board["labels"]
 print(f"Ground Truth:\n{true_labels}")
 
 # --- 一致率表示（任意） ---

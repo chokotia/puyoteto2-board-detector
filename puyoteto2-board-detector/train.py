@@ -1,6 +1,6 @@
 import torch
 from torch import nn, optim
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from torchvision import models
 from dataset import TetrisCellDataset
 from transform import get_train_transform, get_test_transform
@@ -19,18 +19,15 @@ timestamp = datetime.now().strftime('%Y-%m-%d-%H%M')
 save_dir = os.path.join("models", timestamp)
 os.makedirs(save_dir, exist_ok=True)
 
-# --- データ読み込み & 分割 ---
-full_dataset = TetrisCellDataset(
-    board_info_path='./data/preprocessed_board_info.json',
+# --- データ読み込み ---
+train_dataset = TetrisCellDataset(
+    board_info_path='./data/cell_annotations_train.json',
     transform=get_train_transform()
 )
-
-train_size = int(TRAIN_RATIO * len(full_dataset))
-test_size = len(full_dataset) - train_size
-train_dataset, test_dataset = random_split(full_dataset, [train_size, test_size])
-
-# テスト用データはtransform差し替え
-test_dataset.dataset.transform = get_test_transform()
+test_dataset = TetrisCellDataset(
+    board_info_path='./data/cell_annotations_val.json',
+    transform=get_test_transform()
+)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)

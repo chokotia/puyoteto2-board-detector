@@ -1,5 +1,6 @@
 # 機械学習関連
 *.png
+*.pth
 
 
 # Byte-compiled / optimized / DLL files
