@@ -6,6 +6,7 @@ from dataset import TetrisCellDataset
 from transform import get_train_transform, get_test_transform
 import os
 from datetime import datetime
+from collections import Counter
 
 # --- 設定 ---
 BATCH_SIZE = 32
@@ -32,6 +33,30 @@ test_dataset = TetrisCellDataset(
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
+# --- クラス重みの計算 ---
+
+# 学習データのクラス分布を取得
+class_counts = Counter()
+for _, labels in train_loader:
+    for label in labels:
+        class_counts[label.item()] += 1
+
+# 各クラスのサンプル数
+class_samples = [class_counts[i] for i in range(9)]  # 9クラス分
+print("クラス別サンプル数:", class_samples)
+
+# 重みの計算方法1: 逆数重み
+# class_weights_inverse = [1.0 / count for count in class_samples]
+
+# 重みの計算方法2: バランス重み
+total_samples = sum(class_samples)
+class_weights_balanced = [total_samples / (9 * count) for count in class_samples]
+
+# 重みをTensorに変換
+class_weights = torch.FloatTensor(class_weights_balanced).to(DEVICE)
+print("クラス重み:", class_weights)
+
+
 # --- モデル構築（MobileNetV3 smallベース） ---
 from torchvision.models import MobileNet_V3_Small_Weights
 
@@ -44,7 +69,25 @@ model.classifier = nn.Sequential(
 )
 model = model.to(DEVICE)
 
-criterion = nn.CrossEntropyLoss()
+# --- 損失関数 ---
+class FocalLoss(nn.Module):
+    def __init__(self, alpha=1, gamma=2, weight=None):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.weight = weight
+        self.ce_loss = nn.CrossEntropyLoss(weight=weight, reduction='none')
+    
+    def forward(self, inputs, targets):
+        ce_loss = self.ce_loss(inputs, targets)
+        pt = torch.exp(-ce_loss)
+        focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
+        return focal_loss.mean()
+
+# criterion = nn.CrossEntropyLoss()
+criterion = FocalLoss(gamma=2)
+# criterion = FocalLoss(weight=class_weights, gamma=2)
+# criterion = nn.CrossEntropyLoss(weight=class_weights)   # クラス重みを使用
 optimizer = optim.Adam(model.parameters(), lr=LR)
 
 # --- 学習ループ ---
