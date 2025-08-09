@@ -42,19 +42,19 @@ for _, labels in train_loader:
         class_counts[label.item()] += 1
 
 # 各クラスのサンプル数
-class_samples = [class_counts[i] for i in range(9)]  # 9クラス分
-print("クラス別サンプル数:", class_samples)
+# class_samples = [class_counts[i] for i in range(9)]  # 9クラス分
+# print("クラス別サンプル数:", class_samples)
 
-# 重みの計算方法1: 逆数重み
-# class_weights_inverse = [1.0 / count for count in class_samples]
+# # 重みの計算方法1: 逆数重み
+# # class_weights_inverse = [1.0 / count for count in class_samples]
 
-# 重みの計算方法2: バランス重み
-total_samples = sum(class_samples)
-class_weights_balanced = [total_samples / (9 * count) for count in class_samples]
+# # 重みの計算方法2: バランス重み
+# total_samples = sum(class_samples)
+# class_weights_balanced = [total_samples / (9 * count) for count in class_samples]
 
-# 重みをTensorに変換
-class_weights = torch.FloatTensor(class_weights_balanced).to(DEVICE)
-print("クラス重み:", class_weights)
+# # 重みをTensorに変換
+# class_weights = torch.FloatTensor(class_weights_balanced).to(DEVICE)
+# print("クラス重み:", class_weights)
 
 
 # --- モデル構築（MobileNetV3 smallベース） ---
@@ -84,8 +84,8 @@ class FocalLoss(nn.Module):
         focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
         return focal_loss.mean()
 
-# criterion = nn.CrossEntropyLoss()
-criterion = FocalLoss(gamma=2)
+criterion = nn.CrossEntropyLoss()
+# criterion = FocalLoss(gamma=2)
 # criterion = FocalLoss(weight=class_weights, gamma=2)
 # criterion = nn.CrossEntropyLoss(weight=class_weights)   # クラス重みを使用
 optimizer = optim.Adam(model.parameters(), lr=LR)

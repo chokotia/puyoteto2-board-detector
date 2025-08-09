@@ -18,8 +18,8 @@ def create_model():
     return model
 
 # --- 設定 ---
-model_path = "models/2025-08-07-1559/epoch_1_acc_87.31.pth"  # 学習済みモデルパス
-output_path = "tetris_mobilenet_v3_small.onnx"  # 出力ONNXファイル名
+model_path = "models/2025-08-10-0127/epoch_6_acc_100.00.pth"  # 学習済みモデルパス
+output_path = "tetris_mobilenet_v3_small_2025-08-10-0127.onnx"  # 出力ONNXファイル名
 # Webアプリ用にはCPU固定が推奨（ONNX.jsとの互換性向上）
 device = torch.device("cpu")
 

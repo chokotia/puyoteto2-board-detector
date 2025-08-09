@@ -48,7 +48,7 @@ class RandomWhiteSpotNoise:
 def get_train_transform():
     return transforms.Compose([
         transforms.RandomHorizontalFlip(p=0.5),                # 左右反転（上下は禁止）
-        transforms.ColorJitter(0.2, 0.2, 0.2, 0.05),            # 明るさ/コントラスト/彩度/色相
+        transforms.ColorJitter(0.2, 0.2, 0.2, 0.00),            # 明るさ/コントラスト/彩度/色相
         RandomWhiteLineNoise(p=0.3),
         RandomWhiteSpotNoise(p=0.3),
         transforms.Resize((224, 224)),
